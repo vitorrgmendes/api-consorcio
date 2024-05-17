@@ -1,3 +1,3 @@
-Vitor Mendes - Entity User
-Vinicius Pereira - Entity Group
-Augusrto França - Entity Filter
+Vitor Mendes - Entity User <br>
+Vinicius Pereira - Entity Group <br>
+Augusrto França - Entity Filter <br>
