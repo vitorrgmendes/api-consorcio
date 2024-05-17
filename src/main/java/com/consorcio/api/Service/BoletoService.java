@@ -22,7 +22,7 @@ public class BoletoService {
         return boletosRepository.save(boletos);
     }
 
-    public List<BoletosModel> readGroup() throws Exception {
+    public List<BoletosModel> readBoleto() throws Exception {
         return boletosRepository.findAll();
     }
 
