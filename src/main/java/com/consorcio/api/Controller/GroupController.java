@@ -1,46 +1,54 @@
 package com.consorcio.api.Controller;
 
 import com.consorcio.api.Model.GroupModel;
-import com.consorcio.api.Model.UserModel;
-import com.consorcio.api.Service.GroupApplication;
+import com.consorcio.api.Service.GroupService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
-@RequestMapping("group")
-
-public class GroupController {
-
+@RequestMapping("groups")
+public class GroupController
+{
     @Autowired
-    private GroupApplication groupApplication;
+    private GroupService groupService;
 
-    @PostMapping("create")
-    public void signup(@RequestBody @Valid GroupModel group)
+    @PostMapping("{userId}/create")
+    public void create(@PathVariable("userId") Long userId, @RequestBody @Valid GroupModel group)
     {
-        groupApplication.create(group);
+        groupService.create(userId, group);
+    }
+
+    @PostMapping("join/{userId}/{groupId}")
+    public ResponseEntity<Object> joinGroup(@PathVariable("userId") Long userId, @PathVariable("groupId") Long groupId)
+    {
+        return groupService.joinGroup(userId, groupId);
+    }
+
+    @PostMapping("leave/{userId}/{groupId}")
+    public ResponseEntity<Object> leaveGroup(@PathVariable("userId") Long userId, @PathVariable("groupId") Long groupId)
+    {
+        return groupService.leaveGroup(userId, groupId);
     }
 
     @GetMapping("")
     public List<GroupModel> readGroup() throws Exception{
 
-        return groupApplication.readGroup();
+        return groupService.readGroup();
     }
 
     @GetMapping("/{id}")
-    public GroupModel readGroupById(@PathVariable("id") Long id) throws Exception{
+    public ResponseEntity<Object> readGroupById(@PathVariable("id") Long id) throws Exception{
 
-        return groupApplication.readById(id);
+        return groupService.readById(id);
     }
 
-    @PutMapping("/{id}/update")
-    public GroupModel updateGroup(@PathVariable("id") Long id, @RequestBody @Valid GroupModel group) throws Exception{
-        return  groupApplication.update(group, id);
-    }
-
-    @DeleteMapping("/{id}/delete")
-    public void deleteGroup(@PathVariable("id") Long id) throws Exception{
-        groupApplication.delete(id);
+    @DeleteMapping("delete/{userId}/{groupId}")
+    public ResponseEntity<Object> deleteGroup(@PathVariable("userId") Long userId, @PathVariable("groupId") Long groupId)
+    {
+        return groupService.delete(userId, groupId);
     }
 }

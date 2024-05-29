@@ -1,12 +1,18 @@
 package com.consorcio.api.Model;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import jakarta.persistence.Entity;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.*;
 
 @Entity
 @Getter
@@ -14,47 +20,46 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Table(name = "group")
-
+@Table(name = "groups")
 public class GroupModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
     @NotEmpty
     @NotBlank
     String name;
 
-    @NotEmpty
-    @NotBlank
+    @NotNull
     Long valorTotal;
 
-    @NotEmpty
-    @NotBlank
+    @NotNull
     Long valorParcelas;
 
-    @NotEmpty
-    @NotBlank
-    Date dataCricao;
+    @NotNull(message = "Date cannot be null")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    LocalDate dataCriacao;
 
-    @NotEmpty
-    @NotBlank
+    @NotNull
     int meses;
 
-    @NotEmpty
-    @NotBlank
-    Date dataFinal;
+    @NotNull(message = "Date cannot be null")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    LocalDate dataFinal;
 
+    @NotNull
     int quantidadePessoas;
 
-    @NotEmpty
-    @NotBlank
+    @NotNull
     boolean privado;
 
-    @NotEmpty
-    @NotBlank
-    @Id
-    private long idCliente;
+    Long createdBy;
+
+    //@JsonManagedReference(value = "test")
+    @ManyToMany(mappedBy = "groups")
+    private List<UserModel> users = new ArrayList<>();
+
+    @OneToMany(mappedBy = "grupo")
+    private List<PrizeModel> prizes = new ArrayList<>();
 }
