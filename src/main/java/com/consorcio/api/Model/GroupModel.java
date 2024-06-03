@@ -56,10 +56,13 @@ public class GroupModel {
 
     Long createdBy;
 
-    //@JsonManagedReference(value = "test")
+    @JsonIgnore
     @ManyToMany(mappedBy = "groups")
     private List<UserModel> users = new ArrayList<>();
 
-    @OneToMany(mappedBy = "grupo")
+    @OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL)
     private List<PrizeModel> prizes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "group")
+    private List<PaymentModel> payments;
 }

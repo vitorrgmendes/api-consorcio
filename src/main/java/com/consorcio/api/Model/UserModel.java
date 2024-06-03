@@ -63,7 +63,6 @@ public class UserModel
     @NotBlank
     String city;
 
-    @JsonBackReference
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "user_group",
@@ -71,5 +70,9 @@ public class UserModel
             inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id")
     )
     private List<GroupModel> groups = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<PaymentModel> payments;
 
 }

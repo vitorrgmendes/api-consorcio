@@ -17,9 +17,9 @@ public class GroupController
     private GroupService groupService;
 
     @PostMapping("{userId}/create")
-    public void create(@PathVariable("userId") Long userId, @RequestBody @Valid GroupModel group)
+    public ResponseEntity<?> create(@PathVariable("userId") Long userId, @RequestBody @Valid GroupModel group)
     {
-        groupService.create(userId, group);
+        return groupService.create(userId, group);
     }
 
     @PostMapping("join/{userId}/{groupId}")

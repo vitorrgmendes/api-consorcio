@@ -27,21 +27,37 @@ public class GroupService {
     @Autowired
     private PrizeService prizeService;
 
+    @Autowired
+    private PaymentService paymentService;
+
     @Transactional
-    public GroupModel create(Long userId, GroupModel group)
-    {
-        UserModel user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " not found!"));
+    public ResponseEntity<?> create(Long userId, GroupModel group) {
+        try {
+            UserModel user = userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " not found!"));
 
-        group.setCreatedBy(userId);
-        user.getGroups().add(group);
+            group.setCreatedBy(userId);
+            user.getGroups().add(group);
 
-        groupRepository.save(group);
-        userRepository.save(user);
+            groupRepository.save(group);
+            userRepository.save(user);
 
-        prizeService.createPrizesByGroup(group);
+            prizeService.createPrizesByGroup(group);
+            paymentService.createPaymentsByGroup(user, group);
 
-        return group;
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", 200);
+            errorResponse.put("message", "Group created successfully!");
+            return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            // Handle other exceptions generically
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", 500);
+            errorResponse.put("message", "An error occurred while creating the group.");
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Transactional
@@ -55,6 +71,15 @@ public class GroupService {
             GroupModel group = groupRepository.findById(groupId)
                     .orElseThrow(() -> new EntityNotFoundException("Group with id " + groupId + " not found!"));
 
+            // Check if the group is full
+            if (group.getUsers().size() >= group.getQuantidadePessoas())
+            {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("error", 409); // Conflict
+                errorResponse.put("message", "Group is full!");
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            }
+
             // Check if user is already in the group
             if (user.getGroups().contains(group))
             {
@@ -66,6 +91,8 @@ public class GroupService {
 
             user.getGroups().add(group);
             userRepository.save(user);
+
+            paymentService.createPaymentsByGroup(user, group);
 
             Map<String, Object> successResponse = new HashMap<>();
             successResponse.put("message", "User successfully joined the group!");
