@@ -1,5 +1,6 @@
 package com.consorcio.api.Service;
 
+import com.consorcio.api.DTO.UserDTO.UserUpdateDTO;
 import com.consorcio.api.Model.GroupModel;
 import com.consorcio.api.Model.UserModel;
 import com.consorcio.api.Repository.UserRepository;
@@ -76,7 +77,7 @@ public class UserService
     }
 
     @Transactional
-    public ResponseEntity<Object> update(UserModel user, Long id)
+    public ResponseEntity<Object> update(UserUpdateDTO user, Long id)
     {
         try
         {
@@ -92,7 +93,6 @@ public class UserService
             // User found, update details
             UserModel userToUpdate = userOptional.get();
             userToUpdate.setName(user.getName());
-            userToUpdate.setPassword(user.getPassword());
             userToUpdate.setPhone(user.getPhone());
             userToUpdate.setAddress(user.getAddress());
             userToUpdate.setComplement(user.getComplement());
@@ -103,7 +103,10 @@ public class UserService
             userRepository.save(userToUpdate);
 
             // Update successful, return the updated user
-            return new ResponseEntity<>(userToUpdate, HttpStatus.OK);
+            Map<String, Object> successResponse = new HashMap<>();
+            successResponse.put("error", 200);
+            successResponse.put("message", "User updated successfully!");
+            return new ResponseEntity<>(successResponse, HttpStatus.OK);
         }
         catch (Exception e)
         {

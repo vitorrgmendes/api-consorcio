@@ -1,5 +1,6 @@
 package com.consorcio.api.Controller;
 
+import com.consorcio.api.DTO.UserDTO.UserUpdateDTO;
 import com.consorcio.api.Model.UserModel;
 import com.consorcio.api.Service.UserService;
 import jakarta.validation.Valid;
@@ -41,7 +42,7 @@ public class UserController
     }
 
     @PutMapping("/{id}/update")
-    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid UserModel user) throws Exception
+    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid UserUpdateDTO user) throws Exception
     {
         return userService.update(user, id);
     }
