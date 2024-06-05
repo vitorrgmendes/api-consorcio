@@ -9,6 +9,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("prizes")
+@CrossOrigin(origins = "4200")
 public class PrizeController
 {
     @Autowired

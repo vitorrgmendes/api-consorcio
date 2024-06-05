@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("groups")
+@CrossOrigin(origins = "4200")
 public class GroupController
 {
     @Autowired
