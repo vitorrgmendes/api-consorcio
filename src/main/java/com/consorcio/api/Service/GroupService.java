@@ -46,7 +46,6 @@ public class GroupService {
             paymentService.createPaymentsByGroup(user, group);
 
             Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", 200);
             errorResponse.put("message", "Group created successfully!");
             return new ResponseEntity<>(errorResponse, HttpStatus.OK);
         }

@@ -63,6 +63,7 @@ public class GroupModel {
     @OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL)
     private List<PrizeModel> prizes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "group")
+    @JsonIgnore
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<PaymentModel> payments;
 }
