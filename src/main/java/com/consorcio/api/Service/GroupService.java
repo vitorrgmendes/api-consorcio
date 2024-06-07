@@ -54,7 +54,7 @@ public class GroupService {
             // Handle other exceptions generically
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", 500);
-            errorResponse.put("message", "An error occurred while creating the group.");
+            errorResponse.put("message", e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -101,9 +101,9 @@ public class GroupService {
         {
             // Handle EntityNotFoundExceptions specifically
             Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", 404);
+            errorResponse.put("error", 500);
             errorResponse.put("message", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         catch (Exception e)
         {
