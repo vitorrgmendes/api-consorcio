@@ -63,6 +63,7 @@ public class UserModel
     @NotBlank
     String city;
 
+    @JsonIgnore
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "user_group",

@@ -1,5 +1,7 @@
 package com.consorcio.api.Controller;
 
+import com.consorcio.api.DTO.UserDTO.UserLoginDTO;
+import com.consorcio.api.DTO.UserDTO.UserLoginUpdateDTO;
 import com.consorcio.api.DTO.UserDTO.UserUpdateDTO;
 import com.consorcio.api.Model.UserModel;
 import com.consorcio.api.Service.UserService;
@@ -21,6 +23,12 @@ public class UserController
     public ResponseEntity<Object> signup(@RequestBody @Valid UserModel user)
     {
         return userService.create(user);
+    }
+
+    @PostMapping("login")
+    public ResponseEntity<Object> login(@RequestBody @Valid UserLoginDTO user)
+    {
+        return userService.login(user);
     }
 
     @GetMapping("")
@@ -45,6 +53,12 @@ public class UserController
     public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody @Valid UserUpdateDTO user) throws Exception
     {
         return userService.update(user, id);
+    }
+
+    @PutMapping("/{id}/updatelogin")
+    public ResponseEntity<Object> updateLogin(@PathVariable("id") Long id, @RequestBody @Valid UserLoginUpdateDTO user) throws Exception
+    {
+        return userService.updateLogin(user, id);
     }
 
     @DeleteMapping("/{id}/delete")

@@ -56,7 +56,6 @@ public class GroupModel {
 
     Long createdBy;
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "groups")
     private List<UserModel> users = new ArrayList<>();
 

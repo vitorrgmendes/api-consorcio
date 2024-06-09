@@ -1,5 +1,7 @@
 package com.consorcio.api.Service;
 
+import com.consorcio.api.DTO.UserDTO.UserLoginDTO;
+import com.consorcio.api.DTO.UserDTO.UserLoginUpdateDTO;
 import com.consorcio.api.DTO.UserDTO.UserUpdateDTO;
 import com.consorcio.api.Model.GroupModel;
 import com.consorcio.api.Model.UserModel;
@@ -36,6 +38,28 @@ public class UserService
             errorResponse.put("message", e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Transactional
+    public ResponseEntity<Object> login(UserLoginDTO user) {
+        try {
+            UserModel existingUser = userRepository.findByEmail(user.getEmail());
+            if (existingUser == null || !existingUser.getPassword().equals(user.getPassword())) {
+                return generateErrorResponse(401, "User or password is incorrect.");
+            }
+
+            return new ResponseEntity<>(existingUser, HttpStatus.OK);
+        } catch (Exception e) {
+            return generateErrorResponse(500, e.getMessage());
+        }
+    }
+
+    //Método para usar mensagem de erro
+    private ResponseEntity<Object> generateErrorResponse(int errorCode, String message) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("error", errorCode);
+        errorResponse.put("message", message);
+        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(errorCode));
     }
 
     public List<UserModel> readUsers() throws Exception
@@ -105,6 +129,42 @@ public class UserService
             // Update successful, return the updated user
             Map<String, Object> successResponse = new HashMap<>();
             successResponse.put("error", 200);
+            successResponse.put("message", "User updated successfully!");
+            return new ResponseEntity<>(successResponse, HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", 500);
+            errorResponse.put("message", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<Object> updateLogin(UserLoginUpdateDTO user, Long id)
+    {
+        try
+        {
+            // Check if user exists
+            Optional<UserModel> userOptional = userRepository.findById(id);
+            if (userOptional.isEmpty()) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("error", 404);
+                errorResponse.put("message", "User not found with id " + id);
+                return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+            }
+
+            // User found, update details
+            UserModel userToUpdate = userOptional.get();
+            userToUpdate.setEmail(user.getEmail());
+            userToUpdate.setPassword(user.getPassword());
+
+            // Save the updated user
+            userRepository.save(userToUpdate);
+
+            // Update successful, return the updated user
+            Map<String, Object> successResponse = new HashMap<>();
             successResponse.put("message", "User updated successfully!");
             return new ResponseEntity<>(successResponse, HttpStatus.OK);
         }
