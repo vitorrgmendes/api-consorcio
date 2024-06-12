@@ -58,21 +58,20 @@ public class PaymentService
     {
         try
         {
-            String sql = """
-                        select
+            String sql = """                        
+                        SELECT
                             p.id,
                             p.data_vencimento,
                             p.valor,
                             p.is_paid,
                             g.name nome_grupo
-                          from
+                        FROM
                             payments p
-                          left join users u on u.id = p.user_id
-                          left join user_group ug on ug.user_id = u.id
-                          left join groups g on g.id = ug.group_id
-                          where
+                        LEFT JOIN users u ON u.id = p.user_id
+                        LEFT JOIN groups g ON g.id = p.group_id
+                        WHERE
                             u.id = ?1
-                          order by
+                        ORDER BY
                             p.data_vencimento;
                         """;
 
